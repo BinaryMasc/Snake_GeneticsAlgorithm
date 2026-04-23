@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Snake Evolution</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Snake Evolution</h1>
+            <p>Genetic Algorithm Neural Network learning to play Snake</p>
+        </header>
+
+        <div class="main-content">
+            <div class="canvas-container">
+                <canvas id="gameCanvas" width="600" height="600"></canvas>
+            </div>
+            
+            <div class="sidebar">
+                <div class="panel controls">
+                    <h2>Controls</h2>
+                    <button id="btn-run" class="btn primary">Run / Pause</button>
+                    <button id="btn-next" class="btn secondary">Next Generation</button>
+                    <div class="slider-group">
+                        <label for="speed-slider">Simulation Speed: <span id="speed-val">1x</span></label>
+                        <input type="range" id="speed-slider" min="1" max="100" value="1">
+                    </div>
+                </div>
+
+                <div class="panel settings">
+                    <h2>Settings</h2>
+                    <div class="input-group">
+                        <label for="input-pop">Population Size:</label>
+                        <input type="number" id="input-pop" min="10" max="1000" value="100">
+                    </div>
+                    <div class="input-group">
+                        <label for="input-mut">Mutation Rate (%):</label>
+                        <input type="number" id="input-mut" min="1" max="100" value="5">
+                    </div>
+                    <div class="input-group">
+                        <label for="input-hidden">NN Hidden Nodes:</label>
+                        <input type="number" id="input-hidden" min="4" max="64" value="16">
+                    </div>
+                    <button id="btn-restart" class="btn danger" style="margin-top: 10px;">Restart Simulation</button>
+                </div>
+
+                <div class="panel stats">
+                    <h2>Statistics</h2>
+                    <div class="stat-row">
+                        <span class="label">Generation:</span>
+                        <span class="value" id="stat-gen">1</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="label">Alive:</span>
+                        <span class="value" id="stat-alive">0 / 0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="label">Best Fitness:</span>
+                        <span class="value" id="stat-fitness">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="label">Global Best Fitness:</span>
+                        <span class="value" id="stat-global-fitness">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="matrix.js"></script>
+    <script src="nn.js"></script>
+    <script src="snake.js"></script>
+    <script src="population.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
