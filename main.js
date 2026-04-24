@@ -1,5 +1,7 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+const nnCanvas = document.getElementById('nnCanvas');
+const nnCtx = nnCanvas.getContext('2d');
 
 const btnRun = document.getElementById('btn-run');
 const btnNext = document.getElementById('btn-next');
@@ -103,9 +105,88 @@ function loop() {
 
     updateStats();
 
+    let bestAlive = population.getBestAliveSnake();
+    if (bestAlive && bestAlive.brain) {
+        drawNetwork(bestAlive.brain, nnCtx);
+    }
+
     requestAnimationFrame(loop);
 }
 
 // Initial draw
 drawGrid();
 updateStats();
+
+function drawNetwork(brain, ctx) {
+    ctx.clearRect(0, 0, nnCanvas.width, nnCanvas.height);
+    if (!brain) return;
+
+    let inputs = brain.lastInputs || [];
+    let hidden = brain.lastHidden || [];
+    let outputs = brain.lastOutputs || [];
+
+    let inputNodes = brain.inputNodes;
+    let hiddenNodes = brain.hiddenNodes;
+    let outputNodes = brain.outputNodes;
+
+    let w = nnCanvas.width;
+    let h = nnCanvas.height;
+
+    let nodeRadius = 3;
+    
+    let xInput = w * 0.15;
+    let xHidden = w * 0.5;
+    let xOutput = w * 0.85;
+
+    function getY(index, total) {
+        let spacing = (h * 0.9) / Math.max(total, 1);
+        let offset = (h - (spacing * (total - 1))) / 2;
+        return offset + (index * spacing);
+    }
+
+    for (let i = 0; i < hiddenNodes; i++) {
+        for (let j = 0; j < inputNodes; j++) {
+            let weight = brain.weights_ih.data[i][j];
+            if (Math.abs(weight) > 0.5) {
+                ctx.beginPath();
+                ctx.moveTo(xInput, getY(j, inputNodes));
+                ctx.lineTo(xHidden, getY(i, hiddenNodes));
+                ctx.lineWidth = Math.abs(weight);
+                ctx.strokeStyle = weight > 0 ? 'rgba(59, 130, 246, 0.4)' : 'rgba(239, 68, 68, 0.4)';
+                ctx.stroke();
+            }
+        }
+    }
+
+    for (let i = 0; i < outputNodes; i++) {
+        for (let j = 0; j < hiddenNodes; j++) {
+            let weight = brain.weights_ho.data[i][j];
+            if (Math.abs(weight) > 0.5) {
+                ctx.beginPath();
+                ctx.moveTo(xHidden, getY(j, hiddenNodes));
+                ctx.lineTo(xOutput, getY(i, outputNodes));
+                ctx.lineWidth = Math.abs(weight);
+                ctx.strokeStyle = weight > 0 ? 'rgba(59, 130, 246, 0.4)' : 'rgba(239, 68, 68, 0.4)';
+                ctx.stroke();
+            }
+        }
+    }
+
+    function drawNodeLayer(x, count, activations) {
+        for (let i = 0; i < count; i++) {
+            let val = (activations[i] !== undefined) ? activations[i] : 0;
+            let brightness = Math.floor(val * 255);
+            ctx.beginPath();
+            ctx.arc(x, getY(i, count), nodeRadius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgb(${brightness}, ${brightness}, ${brightness})`;
+            ctx.fill();
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        }
+    }
+
+    drawNodeLayer(xInput, inputNodes, inputs);
+    drawNodeLayer(xHidden, hiddenNodes, hidden);
+    drawNodeLayer(xOutput, outputNodes, outputs);
+}

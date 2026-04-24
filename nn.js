@@ -38,16 +38,19 @@ class NeuralNetwork {
 
     predict(inputArray) {
         let inputs = Matrix.fromArray(inputArray);
+        this.lastInputs = inputs.toArray();
 
         let hidden = Matrix.multiply(this.weights_ih, inputs);
         hidden.add(this.bias_h);
         hidden.map(relu);
+        this.lastHidden = hidden.toArray();
 
         let output = Matrix.multiply(this.weights_ho, hidden);
         output.add(this.bias_o);
         output.map(sigmoid);
+        this.lastOutputs = output.toArray();
 
-        return output.toArray();
+        return this.lastOutputs;
     }
 
     copy() {

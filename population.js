@@ -61,6 +61,22 @@ class Population {
         return count;
     }
 
+    getBestAliveSnake() {
+        let best = null;
+        let maxFit = -1;
+        for (let snake of this.snakes) {
+            if (!snake.isDead && snake.score > maxFit) {
+                maxFit = snake.score;
+                best = snake;
+            }
+        }
+        if (!best && this.snakes.length > 0) {
+            // fallback if all dead but we still want to draw the last one
+            best = this.bestSnake || this.snakes[0];
+        }
+        return best;
+    }
+
     calculateFitness() {
         let sum = 0;
         this.bestFitness = 0;

@@ -19,7 +19,14 @@
         <div class="main-content">
             <div class="canvas-container">
                 <canvas id="gameCanvas" width="600" height="600"></canvas>
+
+                <div class="panel network">
+                    <h2>Best Brain</h2>
+                    <canvas id="nnCanvas" width="200" height="200"
+                        style="width:100%; background:var(--canvas-bg); border-radius: 8px;"></canvas>
+                </div>
             </div>
+
 
             <div class="sidebar">
                 <div class="panel controls">
@@ -74,6 +81,7 @@
                         <span class="value" id="stat-global-fitness">0</span>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
