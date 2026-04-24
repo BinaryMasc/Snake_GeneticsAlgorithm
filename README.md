@@ -2,6 +2,8 @@
 
 **Neural network with Genetics algorithms from scratch.**
 
+[Open in Browser](https://binarymasc.github.io/Snake_GeneticsAlgorithm/)
+
 ![](./images/test.gif)
 
 This repository contains a web-based simulation where an AI learns to play the classic game of Snake. The entire project is built from the ground up using pure vanilla JavaScript, HTML, and CSS, without the use of any external machine learning or AI libraries.
