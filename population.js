@@ -21,7 +21,7 @@ class Population {
         }
     }
 
-    show(ctx) {
+    show(ctx, onlyBest) {
         let bestIndex = 0;
         let maxFit = 0;
         for (let i = 0; i < this.snakes.length; i++) {
@@ -32,9 +32,11 @@ class Population {
         }
 
         // Draw normal snakes first
-        for (let i = 0; i < this.snakes.length; i++) {
-            if (i !== bestIndex) {
-                this.snakes[i].show(ctx, false);
+        if (!onlyBest) {
+            for (let i = 0; i < this.snakes.length; i++) {
+                if (i !== bestIndex) {
+                    this.snakes[i].show(ctx, false);
+                }
             }
         }
         

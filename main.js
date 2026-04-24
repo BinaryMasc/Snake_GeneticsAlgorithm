@@ -15,6 +15,7 @@ const inputPop = document.getElementById('input-pop');
 const inputMut = document.getElementById('input-mut');
 const inputHidden = document.getElementById('input-hidden');
 const btnRestart = document.getElementById('btn-restart');
+const checkOnlyBest = document.getElementById('check-only-best');
 
 let popSize = parseInt(inputPop.value) || 100;
 let mutationRate = (parseFloat(inputMut.value) || 5) / 100;
@@ -33,11 +34,11 @@ btnRun.addEventListener('click', () => {
     }
 });
 
-btnNext.addEventListener('click', () => {
-    // Force next generation
-    population.naturalSelection();
-    updateStats();
-});
+// btnNext.addEventListener('click', () => {
+//     // Force next generation
+//     population.naturalSelection();
+//     updateStats();
+// });
 
 speedSlider.addEventListener('input', (e) => {
     simulationSpeed = parseInt(e.target.value);
@@ -48,14 +49,14 @@ btnRestart.addEventListener('click', () => {
     popSize = parseInt(inputPop.value);
     mutationRate = parseFloat(inputMut.value) / 100;
     window.hiddenLayerNodes = parseInt(inputHidden.value);
-    
+
     population = new Population(popSize, mutationRate);
     updateStats();
-    
+
     if (!running) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawGrid();
-        population.show(ctx);
+        population.show(ctx, checkOnlyBest.checked);
     }
 });
 
@@ -98,8 +99,8 @@ function loop() {
     // Render
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawGrid();
-    population.show(ctx);
-    
+    population.show(ctx, checkOnlyBest.checked);
+
     updateStats();
 
     requestAnimationFrame(loop);
