@@ -61,6 +61,13 @@
                         <label for="input-hidden">Number of Neurons by hidden layer:</label>
                         <input type="number" id="input-hidden" min="4" max="64" value="20">
                     </div>
+                    <div class="input-group">
+                        <label for="select-crossover">Crossover Type:</label>
+                        <select id="select-crossover" style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--panel-bg); color: var(--text-color);">
+                            <option value="weight">By Weight</option>
+                            <option value="neuron">By Neuron</option>
+                        </select>
+                    </div>
                     <button id="btn-restart" class="btn danger" style="margin-top: 10px;">Restart Simulation</button>
                 </div>
 

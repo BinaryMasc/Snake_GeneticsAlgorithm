@@ -178,7 +178,7 @@ class Snake {
     }
 
     crossover(partner) {
-        let childBrain = this.brain.crossover(partner.brain);
+        let childBrain = this.brain.crossover(partner.brain, window.crossoverType || 'weight');
         return new Snake(childBrain);
     }
 

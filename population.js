@@ -39,7 +39,7 @@ class Population {
                 }
             }
         }
-        
+
         // Draw best snake on top
         if (!this.snakes[bestIndex].isDead) {
             this.snakes[bestIndex].show(ctx, true);
@@ -52,7 +52,7 @@ class Population {
         }
         return true;
     }
-    
+
     getAliveCount() {
         let count = 0;
         for (let snake of this.snakes) {
@@ -90,12 +90,12 @@ class Population {
                 this.globalBestFitness = fit;
             }
         }
-        
+
         // Normalize fitness
         for (let snake of this.snakes) {
             sum += snake.fitness;
         }
-        
+
         for (let snake of this.snakes) {
             if (sum === 0) snake.fitness = 1 / this.snakes.length; // fallback
             else snake.fitness = snake.fitness / sum;
@@ -116,25 +116,25 @@ class Population {
 
     naturalSelection() {
         this.calculateFitness();
-        
+
         let newSnakes = [];
-        
+
         // Elitism: keep the best snake without mutation
         if (this.bestSnake) {
             let elite = new Snake(this.bestSnake.brain);
             newSnakes.push(elite);
         }
-        
+
         while (newSnakes.length < this.snakes.length) {
             let parent1 = this.selectParent();
             let parent2 = this.selectParent();
-            
+
             let child = parent1.crossover(parent2);
             child.mutate(this.mutationRate);
-            
+
             newSnakes.push(child);
         }
-        
+
         this.snakes = newSnakes;
         this.generation++;
     }

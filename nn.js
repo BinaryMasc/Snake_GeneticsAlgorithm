@@ -87,61 +87,90 @@ class NeuralNetwork {
         this.bias_o.map(mutateFunc);
     }
 
-    crossover(partner) {
+    crossover(partner, type = 'weight') {
         let child = new NeuralNetwork(this.inputNodes, this.hiddenNodes, this.outputNodes);
 
-        // Crossover weights_ih
-        for (let i = 0; i < child.weights_ih.rows; i++) {
-            for (let j = 0; j < child.weights_ih.cols; j++) {
-                if (Math.random() < 0.5) {
-                    child.weights_ih.data[i][j] = this.weights_ih.data[i][j];
-                } else {
-                    child.weights_ih.data[i][j] = partner.weights_ih.data[i][j];
+        if (type === 'neuron') {
+            // Crossover weights_ih and bias_h (hidden layer 1)
+            for (let i = 0; i < child.weights_ih.rows; i++) {
+                let useParent1 = Math.random() < 0.5;
+                for (let j = 0; j < child.weights_ih.cols; j++) {
+                    child.weights_ih.data[i][j] = useParent1 ? this.weights_ih.data[i][j] : partner.weights_ih.data[i][j];
+                }
+                child.bias_h.data[i][0] = useParent1 ? this.bias_h.data[i][0] : partner.bias_h.data[i][0];
+            }
+
+            // Crossover weights_hh and bias_h2 (hidden layer 2)
+            for (let i = 0; i < child.weights_hh.rows; i++) {
+                let useParent1 = Math.random() < 0.5;
+                for (let j = 0; j < child.weights_hh.cols; j++) {
+                    child.weights_hh.data[i][j] = useParent1 ? this.weights_hh.data[i][j] : partner.weights_hh.data[i][j];
+                }
+                child.bias_h2.data[i][0] = useParent1 ? this.bias_h2.data[i][0] : partner.bias_h2.data[i][0];
+            }
+
+            // Crossover weights_ho and bias_o (output layer)
+            for (let i = 0; i < child.weights_ho.rows; i++) {
+                let useParent1 = Math.random() < 0.5;
+                for (let j = 0; j < child.weights_ho.cols; j++) {
+                    child.weights_ho.data[i][j] = useParent1 ? this.weights_ho.data[i][j] : partner.weights_ho.data[i][j];
+                }
+                child.bias_o.data[i][0] = useParent1 ? this.bias_o.data[i][0] : partner.bias_o.data[i][0];
+            }
+        } else {
+            // Crossover weights_ih
+            for (let i = 0; i < child.weights_ih.rows; i++) {
+                for (let j = 0; j < child.weights_ih.cols; j++) {
+                    if (Math.random() < 0.5) {
+                        child.weights_ih.data[i][j] = this.weights_ih.data[i][j];
+                    } else {
+                        child.weights_ih.data[i][j] = partner.weights_ih.data[i][j];
+                    }
                 }
             }
-        }
 
-        // Crossover weights_hh
-        for (let i = 0; i < child.weights_hh.rows; i++) {
-            for (let j = 0; j < child.weights_hh.cols; j++) {
-                if (Math.random() < 0.5) {
-                    child.weights_hh.data[i][j] = this.weights_hh.data[i][j];
-                } else {
-                    child.weights_hh.data[i][j] = partner.weights_hh.data[i][j];
+            // Crossover weights_hh
+            for (let i = 0; i < child.weights_hh.rows; i++) {
+                for (let j = 0; j < child.weights_hh.cols; j++) {
+                    if (Math.random() < 0.5) {
+                        child.weights_hh.data[i][j] = this.weights_hh.data[i][j];
+                    } else {
+                        child.weights_hh.data[i][j] = partner.weights_hh.data[i][j];
+                    }
                 }
             }
-        }
 
-        // Crossover weights_ho
-        for (let i = 0; i < child.weights_ho.rows; i++) {
-            for (let j = 0; j < child.weights_ho.cols; j++) {
-                if (Math.random() < 0.5) {
-                    child.weights_ho.data[i][j] = this.weights_ho.data[i][j];
-                } else {
-                    child.weights_ho.data[i][j] = partner.weights_ho.data[i][j];
+            // Crossover weights_ho
+            for (let i = 0; i < child.weights_ho.rows; i++) {
+                for (let j = 0; j < child.weights_ho.cols; j++) {
+                    if (Math.random() < 0.5) {
+                        child.weights_ho.data[i][j] = this.weights_ho.data[i][j];
+                    } else {
+                        child.weights_ho.data[i][j] = partner.weights_ho.data[i][j];
+                    }
                 }
             }
-        }
 
-        // Crossover biases
-        for (let i = 0; i < child.bias_h.rows; i++) {
-            for (let j = 0; j < child.bias_h.cols; j++) {
-                if (Math.random() < 0.5) child.bias_h.data[i][j] = this.bias_h.data[i][j];
-                else child.bias_h.data[i][j] = partner.bias_h.data[i][j];
+            // Crossover biases
+            for (let i = 0; i < child.bias_h.rows; i++) {
+                for (let j = 0; j < child.bias_h.cols; j++) {
+                    if (Math.random() < 0.5) child.bias_h.data[i][j] = this.bias_h.data[i][j];
+                    else child.bias_h.data[i][j] = partner.bias_h.data[i][j];
+                }
             }
-        }
 
-        for (let i = 0; i < child.bias_h2.rows; i++) {
-            for (let j = 0; j < child.bias_h2.cols; j++) {
-                if (Math.random() < 0.5) child.bias_h2.data[i][j] = this.bias_h2.data[i][j];
-                else child.bias_h2.data[i][j] = partner.bias_h2.data[i][j];
+            for (let i = 0; i < child.bias_h2.rows; i++) {
+                for (let j = 0; j < child.bias_h2.cols; j++) {
+                    if (Math.random() < 0.5) child.bias_h2.data[i][j] = this.bias_h2.data[i][j];
+                    else child.bias_h2.data[i][j] = partner.bias_h2.data[i][j];
+                }
             }
-        }
 
-        for (let i = 0; i < child.bias_o.rows; i++) {
-            for (let j = 0; j < child.bias_o.cols; j++) {
-                if (Math.random() < 0.5) child.bias_o.data[i][j] = this.bias_o.data[i][j];
-                else child.bias_o.data[i][j] = partner.bias_o.data[i][j];
+            for (let i = 0; i < child.bias_o.rows; i++) {
+                for (let j = 0; j < child.bias_o.cols; j++) {
+                    if (Math.random() < 0.5) child.bias_o.data[i][j] = this.bias_o.data[i][j];
+                    else child.bias_o.data[i][j] = partner.bias_o.data[i][j];
+                }
             }
         }
 
