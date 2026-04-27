@@ -86,9 +86,10 @@ function drawGrid() {
     }
 }
 
+let it_count = 0;
 function loop() {
     if (!running) return;
-
+    it_count++;
     // Run simulation updates
     for (let i = 0; i < simulationSpeed; i++) {
         if (!population.allDead()) {
@@ -96,6 +97,12 @@ function loop() {
         } else {
             population.naturalSelection();
         }
+    }
+
+    // Skip rendering frames for better performance
+    if (simulationSpeed > 3 && it_count % 3 != 0) {
+        requestAnimationFrame(loop);
+        return;
     }
 
     // Render
@@ -123,6 +130,7 @@ function drawNetwork(brain, ctx) {
 
     let inputs = brain.lastInputs || [];
     let hidden = brain.lastHidden || [];
+    let hidden2 = brain.lastHidden2 || [];
     let outputs = brain.lastOutputs || [];
 
     let inputNodes = brain.inputNodes;
@@ -133,9 +141,10 @@ function drawNetwork(brain, ctx) {
     let h = nnCanvas.height;
 
     let nodeRadius = 3;
-    
+
     let xInput = w * 0.15;
-    let xHidden = w * 0.5;
+    let xHidden1 = w * 0.38;
+    let xHidden2 = w * 0.62;
     let xOutput = w * 0.85;
 
     function getY(index, total) {
@@ -150,7 +159,21 @@ function drawNetwork(brain, ctx) {
             if (Math.abs(weight) > 0.5) {
                 ctx.beginPath();
                 ctx.moveTo(xInput, getY(j, inputNodes));
-                ctx.lineTo(xHidden, getY(i, hiddenNodes));
+                ctx.lineTo(xHidden1, getY(i, hiddenNodes));
+                ctx.lineWidth = Math.abs(weight);
+                ctx.strokeStyle = weight > 0 ? 'rgba(59, 130, 246, 0.4)' : 'rgba(239, 68, 68, 0.4)';
+                ctx.stroke();
+            }
+        }
+    }
+
+    for (let i = 0; i < hiddenNodes; i++) {
+        for (let j = 0; j < hiddenNodes; j++) {
+            let weight = brain.weights_hh.data[i][j];
+            if (Math.abs(weight) > 0.5) {
+                ctx.beginPath();
+                ctx.moveTo(xHidden1, getY(j, hiddenNodes));
+                ctx.lineTo(xHidden2, getY(i, hiddenNodes));
                 ctx.lineWidth = Math.abs(weight);
                 ctx.strokeStyle = weight > 0 ? 'rgba(59, 130, 246, 0.4)' : 'rgba(239, 68, 68, 0.4)';
                 ctx.stroke();
@@ -163,7 +186,7 @@ function drawNetwork(brain, ctx) {
             let weight = brain.weights_ho.data[i][j];
             if (Math.abs(weight) > 0.5) {
                 ctx.beginPath();
-                ctx.moveTo(xHidden, getY(j, hiddenNodes));
+                ctx.moveTo(xHidden2, getY(j, hiddenNodes));
                 ctx.lineTo(xOutput, getY(i, outputNodes));
                 ctx.lineWidth = Math.abs(weight);
                 ctx.strokeStyle = weight > 0 ? 'rgba(59, 130, 246, 0.4)' : 'rgba(239, 68, 68, 0.4)';
@@ -187,6 +210,7 @@ function drawNetwork(brain, ctx) {
     }
 
     drawNodeLayer(xInput, inputNodes, inputs);
-    drawNodeLayer(xHidden, hiddenNodes, hidden);
+    drawNodeLayer(xHidden1, hiddenNodes, hidden);
+    drawNodeLayer(xHidden2, hiddenNodes, hidden2);
     drawNodeLayer(xOutput, outputNodes, outputs);
 }

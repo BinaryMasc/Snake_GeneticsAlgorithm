@@ -15,9 +15,11 @@ class NeuralNetwork {
             this.outputNodes = a.outputNodes;
 
             this.weights_ih = a.weights_ih.copy();
+            this.weights_hh = a.weights_hh.copy();
             this.weights_ho = a.weights_ho.copy();
 
             this.bias_h = a.bias_h.copy();
+            this.bias_h2 = a.bias_h2.copy();
             this.bias_o = a.bias_o.copy();
         } else {
             this.inputNodes = inputNodes;
@@ -25,13 +27,17 @@ class NeuralNetwork {
             this.outputNodes = outputNodes;
 
             this.weights_ih = new Matrix(this.hiddenNodes, this.inputNodes);
+            this.weights_hh = new Matrix(this.hiddenNodes, this.hiddenNodes);
             this.weights_ho = new Matrix(this.outputNodes, this.hiddenNodes);
             this.weights_ih.randomize();
+            this.weights_hh.randomize();
             this.weights_ho.randomize();
 
             this.bias_h = new Matrix(this.hiddenNodes, 1);
+            this.bias_h2 = new Matrix(this.hiddenNodes, 1);
             this.bias_o = new Matrix(this.outputNodes, 1);
             this.bias_h.randomize();
+            this.bias_h2.randomize();
             this.bias_o.randomize();
         }
     }
@@ -45,7 +51,12 @@ class NeuralNetwork {
         hidden.map(relu);
         this.lastHidden = hidden.toArray();
 
-        let output = Matrix.multiply(this.weights_ho, hidden);
+        let hidden2 = Matrix.multiply(this.weights_hh, hidden);
+        hidden2.add(this.bias_h2);
+        hidden2.map(relu);
+        this.lastHidden2 = hidden2.toArray();
+
+        let output = Matrix.multiply(this.weights_ho, hidden2);
         output.add(this.bias_o);
         output.map(sigmoid);
         this.lastOutputs = output.toArray();
@@ -69,8 +80,10 @@ class NeuralNetwork {
             }
         }
         this.weights_ih.map(mutateFunc);
+        this.weights_hh.map(mutateFunc);
         this.weights_ho.map(mutateFunc);
         this.bias_h.map(mutateFunc);
+        this.bias_h2.map(mutateFunc);
         this.bias_o.map(mutateFunc);
     }
 
@@ -84,6 +97,17 @@ class NeuralNetwork {
                     child.weights_ih.data[i][j] = this.weights_ih.data[i][j];
                 } else {
                     child.weights_ih.data[i][j] = partner.weights_ih.data[i][j];
+                }
+            }
+        }
+
+        // Crossover weights_hh
+        for (let i = 0; i < child.weights_hh.rows; i++) {
+            for (let j = 0; j < child.weights_hh.cols; j++) {
+                if (Math.random() < 0.5) {
+                    child.weights_hh.data[i][j] = this.weights_hh.data[i][j];
+                } else {
+                    child.weights_hh.data[i][j] = partner.weights_hh.data[i][j];
                 }
             }
         }
@@ -104,6 +128,13 @@ class NeuralNetwork {
             for (let j = 0; j < child.bias_h.cols; j++) {
                 if (Math.random() < 0.5) child.bias_h.data[i][j] = this.bias_h.data[i][j];
                 else child.bias_h.data[i][j] = partner.bias_h.data[i][j];
+            }
+        }
+
+        for (let i = 0; i < child.bias_h2.rows; i++) {
+            for (let j = 0; j < child.bias_h2.cols; j++) {
+                if (Math.random() < 0.5) child.bias_h2.data[i][j] = this.bias_h2.data[i][j];
+                else child.bias_h2.data[i][j] = partner.bias_h2.data[i][j];
             }
         }
 
